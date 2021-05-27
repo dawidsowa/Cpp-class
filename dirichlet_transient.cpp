@@ -4,14 +4,8 @@
 
 #include <fstream>
 #include <iostream>
-#include <string>
-
-using std::string;
-
-string filename("data.csv");
 
 const int n = 20;
-string buffer[n];
 
 FILE *fp;
 
@@ -55,11 +49,6 @@ int main() {
     for (int i = 1; i < n; i++) {
         X.coor[i] = X.coor[i - 1] + dx;
         Tp.coor[i] = T0;
-    }
-
-    for (int i = 0; i < n; i++) {
-        buffer[i] = to_string(X.coor[i]);
-        buffer[i] += ",";
     }
 
     Tp.coor[n - 1] = TL;
