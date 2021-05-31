@@ -1,9 +1,10 @@
 #include <math.h>
 #include <stdio.h>
-#include <unistd.h>
 
+#include <chrono>
 #include <fstream>
 #include <iostream>
+#include <thread>
 
 const int n = 20;
 
@@ -59,7 +60,11 @@ int main() {
 
     int col = 1;
 
-    fp = popen("gnuplot -persist", "w");  // Create pipe
+#ifdef WIN32  // Create pipe
+    fp = _popen("gnuplot -persist", "w");
+#else
+    fp = popen("gnuplot -persist", "w");
+#endif
 
     for (int k = 0; k < 1001; k++) {
         neumann(Tp, T, T0, dTL, dx, dt);  // Calculations
@@ -73,8 +78,12 @@ int main() {
         fprintf(fp, "set yrange restore\n");  // Restore Yrange
         fflush(fp);                           // Send to pipe
 
-        usleep(1e5);  // Wait 0.1s
+        this_thread::sleep_for(chrono::milliseconds(200));  // Wait 0.2s
     }
 
-    pclose(fp);  // Close pipe
+#ifdef WIN32  // Close pipe
+    _pclose(fp);
+#else
+    pclose(fp);
+#endif
 }

@@ -1,9 +1,10 @@
 #include <math.h>
 #include <stdio.h>
-#include <unistd.h>
 
+#include <chrono>
 #include <fstream>
 #include <iostream>
+#include <thread>
 
 const int n = 20;
 
@@ -53,9 +54,11 @@ int main() {
 
     Tp.coor[n - 1] = TL;
 
-    int col = 1;
-
+#ifdef WIN32
+    fp = _popen("gnuplot -persist", "w");
+#else
     fp = popen("gnuplot -persist", "w");
+#endif
 
     for (int k = 0; k < 1001; k++) {
         dirichlet(Tp, T, T0, TL, dx, dt);
@@ -67,8 +70,12 @@ int main() {
         fprintf(fp, "e\n");
         fflush(fp);
 
-        usleep(1e5);
+        this_thread::sleep_for(chrono::milliseconds(200));
     }
 
+#ifdef WIN32
+    _pclose(fp);
+#else
     pclose(fp);
+#endif
 }
