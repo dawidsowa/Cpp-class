@@ -1,10 +1,10 @@
 # Cpp-class
 
-## Gnuplot dirichlet
+## dirichlet_transient.cpp
 
 ![](./dirichlet.gif)
 
 
-## Gnuplot neumann
+## neumann_transient.cpp
 
 ![](./neumann.gif)

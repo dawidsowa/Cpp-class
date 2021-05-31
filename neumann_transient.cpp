@@ -9,7 +9,7 @@ const int n = 20;
 
 using namespace std;
 
-FILE *fp;
+FILE* fp;
 
 typedef long double Real;
 
@@ -18,7 +18,7 @@ struct TVec {
     Real coor[n];
 };
 
-void neumann(TVec &Tp, TVec &T, Real T0, Real dTL, Real dx, Real dt) {
+void neumann(TVec& Tp, TVec& T, Real T0, Real dTL, Real dx, Real dt) {
     Real Ta = Tp.coor[n - 2] + 2 * dx * dTL;  // Tp(L+1)
 
     T.coor[0] = T0;

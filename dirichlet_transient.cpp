@@ -7,7 +7,7 @@
 
 const int n = 20;
 
-FILE *fp;
+FILE* fp;
 
 using namespace std;
 
@@ -18,7 +18,7 @@ struct TVec {
     Real coor[n];
 };
 
-void dirichlet(TVec &Tp, TVec &T, Real T0, Real TL, Real dx, Real dt) {
+void dirichlet(TVec& Tp, TVec& T, Real T0, Real TL, Real dx, Real dt) {
     T.coor[0] = T0;
     for (int i = 1; i <= n; i++) {
         T.coor[i] = Tp.coor[i + 1] * dt / pow(dx, 2) +
