@@ -13,109 +13,111 @@ TArra u, v, p;
 
 static const string dirname = ".\\LDC_output";
 
-string args[8] = {
-    // Gnuplot setup args
+string args[8] = {  // Gnuplot setup args
     "set terminal png size 1000, 1000",
     "set view map scale 1",  // Use contour
-    "set autoscale yfix", "set autoscale xfix", "set xlabel 'X'",
+    "set autoscale yfix",
+    "set autoscale xfix",
+    "set xlabel 'X'",
     "set ylabel 'Y'",
     //"set pm3d interpolate 0,0", // Interpolate results with auto nr of points
-    "set size ratio -1",  // Equal ticks
+    "set size ratio -1", // Equal ticks
 };
 
 void SaveToFile(string path, TArra& arr) {
-    ofstream file;
+  ofstream file;
 
-    file.open(dirname + '\\' + path);
+  file.open(dirname + '\\' + path);
 
-    for (int i = 0; i <= nx; i++) {
-        for (int j = 0; j <= ny; j++) {
-            file << arr[i][j] << "\t";
-        }
-        file << endl;
+  for (int i = 0; i <= nx; i++) {
+    for (int j = 0; j <= ny; j++) {
+      file << arr[i][j] << "\t";
     }
+    file << endl;
+  }
 
-    file.close();
+  file.close();
 }
 
 void RenderResults(string basename) {
-    // Create pipe
-    // Function name is different in Visual C++ and in GCC
+  // Create pipe
+  // Function name is different in Visual C++ and in GCC
 #ifdef WIN32
-    FILE* pipe = _popen("gnuplot", "w");
+  FILE* pipe = _popen("gnuplot", "w");
 #else
-    FILE* pipe = popen("gnuplot", "w");
+  FILE* pipe = popen("gnuplot", "w");
 #endif
 
-    for (string arg : args) {  // For each loop
-        fprintf(pipe, "%s\n", arg.c_str());
-    }
+  for (string arg : args) { // For each loop
+    fprintf(pipe, "%s\n", arg.c_str());
+  }
 
-    fprintf(pipe, "set output '%s\\%s'\n", dirname.c_str(),
-            (basename + ".png").c_str());
-    fprintf(pipe, "set title '%s'\n", basename.c_str());
+  fprintf(pipe, "set output '%s\\%s'\n", dirname.c_str(), (basename + ".png").c_str());
+  fprintf(pipe, "set title '%s'\n", basename.c_str());
 
-    fprintf(pipe, "splot '%s\\%s.dat' matrix with image\n", dirname.c_str(),
-            basename.c_str());
-    fflush(pipe);
+  fprintf(pipe, "splot '%s\\%s.dat' matrix with image\n", dirname.c_str(), basename.c_str());
+  fflush(pipe);
 
 #ifdef WIN32
-    _pclose(pipe);
+  _pclose(pipe);
 #else
-    pclose(pipe);
+  pclose(pipe);
 #endif
 }
 
 int SaveResults(int timestamp = -1) {
-    // Check if gnuplot is available
-    // Run only once
-    if (hasGnuplot == NULL) {
-        // Check if gnuplot runs without error
-        // (gnuplot -V prints version and exits)
-        // > nul supresses output
-        if (system("gnuplot -V > nul") == 0) {
-            hasGnuplot = true;
-        } else {
-            hasGnuplot = false;
-        }
-    }
-
-    // Create output directory
-    filesystem::create_directory(dirname);
-
-    string ts;
-    if (timestamp >= 0) {
-        ts = "_" + to_string(timestamp);
+  // Check if gnuplot is available
+  // Run only once
+  if (hasGnuplot == NULL) {
+    // Check if gnuplot runs without error
+    // (gnuplot -V prints version and exits)
+    // > nul supresses output
+    if (system("gnuplot -V > nul") == 0) {
+      hasGnuplot = true;
     } else {
-        ts = "";
+      hasGnuplot = false;
     }
+  }
 
-    SaveToFile("u" + ts + ".dat", u);
-    SaveToFile("v" + ts + ".dat", v);
-    SaveToFile("p" + ts + ".dat", p);
+  // Create output directory
+  filesystem::create_directory(dirname);
 
-    if (hasGnuplot) {
-        RenderResults("u" + ts);
-        RenderResults("v" + ts);
-        RenderResults("p" + ts);
-    }
+   string ts;
+  if (timestamp >= 0) {
+     ts = "_" + to_string(timestamp);
+  } else {
+    ts = "";
+  }
 
-    return 0;
+  SaveToFile("u" + ts + ".dat", u);
+  SaveToFile("v" + ts + ".dat", v);
+  SaveToFile("p" + ts + ".dat", p);
+
+  if (hasGnuplot) {
+    RenderResults("u" + ts);
+    RenderResults("v" + ts);
+    RenderResults("p" + ts);
+  }
+
+  return 0;
 }
 
+
+
+
 int main() {
-    // Fill arrays with some values
-    for (int i = 0; i <= nx; i++) {
-        for (int j = 0; j <= ny; j++) {
-            u[i][j] = rand() % 100;
-            v[i][j] = rand() % 100;
-            p[i][j] = rand() % 100;
-        }
+  // Fill arrays with some values
+  for (int i = 0; i <= nx; i++) {
+    for (int j = 0; j <= ny; j++) {
+      u[i][j] = rand() % 100;
+      v[i][j] = rand() % 100;
+      p[i][j] = rand() % 100;
     }
+  }
 
-    SaveResults();
+  SaveResults();
 
-    SaveResults(0);
+  SaveResults(0);
 
-    SaveResults(20);
+  SaveResults(20);
 }

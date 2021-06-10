@@ -1,0 +1,22 @@
+--- jacobi_limited.cpp	2021-05-17 11:52:35.369376200 +0200
++++ gauss.cpp	2021-05-17 11:52:27.262899700 +0200
+@@ -19,7 +19,6 @@
+ void Jacobi(TMat A, TVec B, TVec &X) {
+     Real erro, temp;
+ 
+-    TVec Y;  // New value of Y
+     int count = 0;
+     do {
+         count++;
+@@ -33,10 +32,7 @@
+             }
+             temp /= A.value[i][i];
+             erro += pow(X.coor[i] - temp, 2);
+-            Y.coor[i] = temp;
+-        }
+-        for (int i = 0; i < A.deg; i++) {
+-            X.coor[i] = Y.coor[i];
++            X.coor[i] = temp;
+         }
+         cout << "iteration " << count << " error=" << erro << endl;
+     } while (erro > 1.0e-30);
